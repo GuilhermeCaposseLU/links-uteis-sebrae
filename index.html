@@ -600,11 +600,9 @@ async function cadastro(){
   var res=await sb.auth.signUp({email:email,password:senha,options:{data:{nome_completo:nome}}});
   btn.disabled=false;btn.textContent='Criar minha conta';
   if(res.error){aMsg('msg-cd','Erro ao criar conta: '+res.error.message,false);return;}
-  await sb.from('codigos_acesso').update({usado:true}).eq('codigo',cod);
-  if(res.data && res.data.user){
-    await sb.from('profiles').update({codigo_acesso:cod,setor_id:chk.data.setor_id||null}).eq('id',res.data.user.id);
-  }
   if(res.data && res.data.session){
+    var fin=await sb.rpc('finalizar_cadastro_com_codigo',{p_codigo:cod});
+    if(fin.error){aMsg('msg-cd','Conta criada, mas houve um erro ao vincular o código: '+fin.error.message,false);return;}
     aMsg('msg-cd','Conta criada! Entrando...',true);
     entrarNoApp();
   }else{
