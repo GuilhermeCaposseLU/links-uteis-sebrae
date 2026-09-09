@@ -1009,9 +1009,9 @@ function iniciarCarrosselHd(){
   var wrap=el('hd-carrossel');
   if(!wrap)return;
   HD_CARROSSEL_INICIADO=true;
-  HD_CARROSSEL_TIMER=setInterval(hdCarrosselProximo,4000);
+  HD_CARROSSEL_TIMER=setInterval(hdCarrosselProximo,4400);
   wrap.addEventListener('mouseenter',function(){clearInterval(HD_CARROSSEL_TIMER);});
-  wrap.addEventListener('mouseleave',function(){HD_CARROSSEL_TIMER=setInterval(hdCarrosselProximo,4000);});
+  wrap.addEventListener('mouseleave',function(){HD_CARROSSEL_TIMER=setInterval(hdCarrosselProximo,4400);});
 }
 async function entrarNoApp(){
   el('auth').style.display='none';
