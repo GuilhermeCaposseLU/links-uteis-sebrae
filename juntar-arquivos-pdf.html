@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juntar arquivos em PDF — Sebrae RJ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --az:#0B4FE0;--azd:#062B7A;--azc:#EAF0FE;--azx:#F4F8FD;
+  --rx:#6A13FC;--rxc:#F1E9FE;
+  --vd:#1D9E75;--vdc:#E6F5F0;
+  --or:#FEA901;--orc:#FFF3DF;
+  --rd:#D92D20;--rdc:#FEECEC;
+  --ink:#0F1729;--sub:#6B7480;--line:#EAECF0;--bg:#FBFBFC;
+  --czb:#E8EAED;--cz:#F7F8FA;
+  --r:16px;--rs:10px;
+  --f:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--f);color:var(--ink);background:var(--bg);line-height:1.55;}
+
+/* ---------- HERO ---------- */
+.hero{
+  background:linear-gradient(150deg,#04184D 0%,#0B4FE0 55%,#6A13FC 100%);
+  color:#fff;padding:64px 24px 96px;position:relative;overflow:hidden;
+}
+.hero::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 85% 10%,rgba(255,255,255,.10),transparent 45%);
+  pointer-events:none;
+}
+.hero-inner{max-width:720px;margin:0 auto;position:relative;text-align:center;}
+.hero-icon-box{
+  width:72px;height:72px;border-radius:18px;margin:0 auto 22px;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+  display:flex;align-items:center;justify-content:center;font-size:32px;
+  box-shadow:0 12px 30px rgba(0,0,0,.35);
+}
+.hero-eyebrow{font-size:13px;font-weight:600;color:rgba(255,255,255,.75);margin-bottom:14px;}
+.hero h1{font-size:clamp(28px,4.5vw,42px);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-bottom:16px;}
+.hero h1 span{color:#BFD3FF;}
+.hero p{font-size:16.5px;color:rgba(255,255,255,.88);max-width:520px;margin:0 auto 8px;}
+.hero-note{margin-top:14px;font-size:12.5px;color:rgba(255,255,255,.65);}
+
+/* ---------- SHARED ---------- */
+.wrap{max-width:720px;margin:0 auto;padding:0 24px;}
+section{padding:56px 0;}
+.section-tag{font-size:13px;font-weight:700;color:var(--az);margin-bottom:10px;}
+h2{font-size:26px;font-weight:800;letter-spacing:-.01em;margin-bottom:12px;}
+.lead{color:var(--sub);font-size:15.5px;max-width:560px;margin-bottom:36px;}
+
+/* ---------- BENEFÍCIOS ---------- */
+.benefits{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.benefit{
+  background:#fff;border:1px solid var(--line);border-left:4px solid var(--accent,var(--az));
+  border-radius:var(--r);padding:22px 22px 20px;
+}
+.benefit-ic{font-size:22px;margin-bottom:10px;display:block;}
+.benefit h3{font-size:15.5px;font-weight:700;margin-bottom:6px;}
+.benefit p{font-size:13.5px;color:var(--sub);}
+
+/* ---------- DROPZONE ---------- */
+.dropzone{
+  border:2px dashed var(--line);border-radius:var(--r);padding:40px 24px;
+  text-align:center;background:#fff;cursor:pointer;
+  transition:border-color .15s ease, background .15s ease;
+}
+.dropzone:hover{border-color:#C6D2E3;}
+.dropzone.drag{border-color:var(--az);background:var(--azx);}
+.dropzone-ic{font-size:30px;display:block;margin-bottom:10px;}
+.dropzone p{font-size:14px;color:var(--sub);}
+.dropzone strong{color:var(--az);}
+.dropzone .formats{font-size:12px;color:var(--sub);margin-top:6px;opacity:.8;}
+input[type=file]{display:none;}
+
+/* ---------- LISTA DE ARQUIVOS ---------- */
+.filelist{margin-top:18px;display:flex;flex-direction:column;gap:10px;}
+.fileitem{
+  background:#fff;border:1px solid var(--line);border-radius:var(--rs);
+  padding:12px 14px;display:flex;align-items:center;gap:12px;
+}
+.fileitem-num{
+  width:24px;height:24px;border-radius:50%;background:var(--azc);color:var(--az);
+  font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.fileitem-ic{
+  width:36px;height:36px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10.5px;font-weight:800;color:#fff;letter-spacing:.02em;
+}
+.fileitem-ic.pdf{background:var(--rx);}
+.fileitem-ic.img{background:var(--vd);}
+.fileitem-info{flex:1;min-width:0;}
+.fileitem-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fileitem-meta{font-size:12px;color:var(--sub);}
+.fileitem-actions{display:flex;gap:4px;flex-shrink:0;}
+.iconbtn{
+  width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:#fff;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;
+  color:var(--sub);font-family:var(--f);
+}
+.iconbtn:hover:not(:disabled){background:var(--cz);}
+.iconbtn:disabled{opacity:.3;cursor:not-allowed;}
+.iconbtn.danger:hover:not(:disabled){background:var(--rdc);color:var(--rd);border-color:var(--rdc);}
+.empty-hint{font-size:13px;color:var(--sub);text-align:center;padding:18px 0 0;}
+
+/* ---------- AÇÕES ---------- */
+.actionbar{margin-top:24px;}
+.filename-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.filename-row label{font-size:13px;color:var(--sub);white-space:nowrap;}
+.filename-row input[type=text]{
+  flex:1;min-width:160px;font-family:var(--f);font-size:14px;color:var(--ink);
+  border:1px solid var(--line);border-radius:var(--rs);padding:9px 12px;background:#fff;
+}
+.filename-row input[type=text]:focus{outline:none;border-color:var(--az);}
+.filename-row .ext{font-size:13px;color:var(--sub);}
+
+.btn-solid{
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--az);color:#fff;font-family:var(--f);
+  font-size:15px;font-weight:700;padding:14px 26px;border-radius:12px;
+  border:none;cursor:pointer;box-shadow:0 8px 22px rgba(11,79,224,.25);
+  transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+.btn-solid:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 26px rgba(11,79,224,.3);}
+.btn-solid:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
+
+.status{font-size:13px;color:var(--sub);margin-top:12px;min-height:18px;}
+.status.err{color:var(--rd);}
+.status.ok{color:var(--vd);font-weight:600;}
+
+/* ---------- FAQ ---------- */
+.faq{border-top:1px solid var(--line);}
+.faq-item{border-bottom:1px solid var(--line);}
+.faq-q{
+  width:100%;text-align:left;background:none;border:none;font-family:var(--f);
+  font-size:15px;font-weight:700;color:var(--ink);padding:18px 0;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+.faq-q .chev{transition:transform .2s ease;color:var(--sub);flex-shrink:0;}
+.faq-item.open .faq-q .chev{transform:rotate(180deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+.faq-item.open .faq-a{max-height:200px;}
+.faq-a p{font-size:14px;color:var(--sub);padding-bottom:18px;max-width:560px;}
+
+footer{text-align:center;padding:28px 24px 48px;font-size:12.5px;color:var(--sub);}
+
+@media(max-width:600px){
+  .benefits{grid-template-columns:1fr;}
+  .hero{padding:48px 20px 76px;}
+  section{padding:44px 0;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-icon-box">🗂️</div>
+    <div class="hero-eyebrow">Ferramenta local — Sebrae RJ</div>
+    <h1>Junte tudo em <span>um único PDF</span></h1>
+    <p>Misture PDF, JPG e PNG na ordem que você quiser e gere um único arquivo. Tudo processado no seu navegador — nada é enviado para a internet.</p>
+    <div class="hero-note">Sem instalar nada · Sem enviar arquivos a servidores</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section id="beneficios">
+    <div class="section-tag">Por que usar</div>
+    <h2>Menos conversor online, mais controle</h2>
+    <p class="lead">Chega de sites que pedem cadastro ou enviam seus documentos para algum servidor desconhecido. Aqui tudo acontece no seu computador.</p>
+
+    <div class="benefits">
+      <div class="benefit" style="--accent:var(--az)">
+        <span class="benefit-ic">🧩</span>
+        <h3>Formatos misturados</h3>
+        <p>Combine PDFs, fotos e prints (JPG/PNG) numa única lista.</p>
+      </div>
+      <div class="benefit" style="--accent:var(--vd)">
+        <span class="benefit-ic">🔒</span>
+        <h3>Nada sai do navegador</h3>
+        <p>Os arquivos são processados localmente. Nenhum upload é feito.</p>
+      </div>
+      <div class="benefit" style="--accent:var(--rx)">
+        <span class="benefit-ic">🔀</span>
+        <h3>Reordene fácil</h3>
+        <p>Suba ou desça cada arquivo antes de gerar o PDF final.</p>
+      </div>
+      <div class="benefit" style="--accent:var(--or)">
+        <span class="benefit-ic">⚡</span>
+        <h3>Sem instalar nada</h3>
+        <p>Abra essa página e use — não precisa de programa ou conta.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="enviar">
+    <div class="section-tag">Passo único</div>
+    <h2>Envie os arquivos</h2>
+    <p class="lead">Arraste os arquivos para a área abaixo ou clique para escolher. Depois é só reordenar e gerar o PDF. Cada página sai padronizada em A4 (retrato ou paisagem, conforme o conteúdo).</p>
+
+    <div class="dropzone" id="dropzone">
+      <span class="dropzone-ic">📥</span>
+      <p><strong>Clique para escolher</strong> ou arraste os arquivos aqui</p>
+      <p class="formats">PDF, JPG e PNG · vários arquivos de uma vez</p>
+      <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">
+    </div>
+
+    <div class="filelist" id="filelist"></div>
+    <p class="empty-hint" id="emptyHint">Nenhum arquivo adicionado ainda.</p>
+
+    <div class="actionbar">
+      <div class="filename-row">
+        <label for="filenameInput">Nome do arquivo final</label>
+        <input type="text" id="filenameInput" value="documento-unificado">
+        <span class="ext">.pdf</span>
+      </div>
+      <button class="btn-solid" id="btnGerar" disabled>📄 Juntar em PDF</button>
+      <div class="status" id="status"></div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="section-tag">Se algo travar</div>
+    <h2>Perguntas rápidas</h2>
+
+    <div class="faq">
+      <div class="faq-item">
+        <button class="faq-q">Um dos meus PDFs tem senha, funciona? <span class="chev">⌄</span></button>
+        <div class="faq-a"><p>Não — PDFs protegidos por senha precisam ser desbloqueados antes. A ferramenta avisa qual arquivo deu problema.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Tem limite de quantos arquivos? <span class="chev">⌄</span></button>
+        <div class="faq-a"><p>Não há um limite fixo, mas tudo roda na memória do navegador — para dezenas de arquivos ou arquivos muito grandes, pode ficar mais lento dependendo do computador.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">As imagens perdem qualidade? <span class="chev">⌄</span></button>
+        <div class="faq-a"><p>Não, cada imagem vira uma página do PDF na resolução original, sem recompressão.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Os arquivos ficam salvos em algum lugar? <span class="chev">⌄</span></button>
+        <div class="faq-a"><p>Não. Ao fechar ou atualizar a página, tudo é descartado — só existem enquanto a aba está aberta.</p></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>Sebrae RJ · Unidade Serrana II — feita por assessor, para assessor.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script>
+(function(){
+  var dropzone = document.getElementById('dropzone');
+  var fileInput = document.getElementById('fileInput');
+  var filelistEl = document.getElementById('filelist');
+  var emptyHint = document.getElementById('emptyHint');
+  var btnGerar = document.getElementById('btnGerar');
+  var statusEl = document.getElementById('status');
+  var filenameInput = document.getElementById('filenameInput');
+
+  var items = []; // {id, file, kind: 'pdf'|'img', ext}
+  var nextId = 1;
+
+  function fmtSize(bytes){
+    if(bytes < 1024) return bytes + ' B';
+    if(bytes < 1024*1024) return (bytes/1024).toFixed(0) + ' KB';
+    return (bytes/(1024*1024)).toFixed(1) + ' MB';
+  }
+
+  function detectKind(file){
+    var name = (file.name || '').toLowerCase();
+    var type = file.type || '';
+    if(type === 'application/pdf' || name.endsWith('.pdf')) return 'pdf';
+    if(type === 'image/jpeg' || name.endsWith('.jpg') || name.endsWith('.jpeg')) return 'jpg';
+    if(type === 'image/png' || name.endsWith('.png')) return 'png';
+    return null;
+  }
+
+  function addFiles(fileListLike){
+    var added = 0, rejected = 0;
+    Array.prototype.forEach.call(fileListLike, function(file){
+      var kind = detectKind(file);
+      if(!kind){ rejected++; return; }
+      items.push({ id: nextId++, file: file, kind: kind });
+      added++;
+    });
+    if(rejected > 0){
+      setStatus(rejected + ' arquivo(s) ignorado(s) — formato não suportado (aceito: PDF, JPG, PNG).', 'err');
+    } else {
+      setStatus('');
+    }
+    render();
+  }
+
+  function setStatus(msg, type){
+    statusEl.textContent = msg || '';
+    statusEl.className = 'status' + (type ? ' ' + type : '');
+  }
+
+  function render(){
+    filelistEl.innerHTML = '';
+    emptyHint.style.display = items.length === 0 ? 'block' : 'none';
+    btnGerar.disabled = items.length === 0;
+
+    items.forEach(function(item, index){
+      var row = document.createElement('div');
+      row.className = 'fileitem';
+
+      var num = document.createElement('div');
+      num.className = 'fileitem-num';
+      num.textContent = index + 1;
+      row.appendChild(num);
+
+      var ic = document.createElement('div');
+      ic.className = 'fileitem-ic ' + (item.kind === 'pdf' ? 'pdf' : 'img');
+      ic.textContent = item.kind === 'pdf' ? 'PDF' : 'IMG';
+      row.appendChild(ic);
+
+      var info = document.createElement('div');
+      info.className = 'fileitem-info';
+      var nameEl = document.createElement('div');
+      nameEl.className = 'fileitem-name';
+      nameEl.textContent = item.file.name;
+      var metaEl = document.createElement('div');
+      metaEl.className = 'fileitem-meta';
+      metaEl.textContent = fmtSize(item.file.size);
+      info.appendChild(nameEl);
+      info.appendChild(metaEl);
+      row.appendChild(info);
+
+      var actions = document.createElement('div');
+      actions.className = 'fileitem-actions';
+
+      var upBtn = document.createElement('button');
+      upBtn.className = 'iconbtn';
+      upBtn.type = 'button';
+      upBtn.textContent = '↑';
+      upBtn.disabled = index === 0;
+      upBtn.addEventListener('click', function(){ moveItem(index, -1); });
+
+      var downBtn = document.createElement('button');
+      downBtn.className = 'iconbtn';
+      downBtn.type = 'button';
+      downBtn.textContent = '↓';
+      downBtn.disabled = index === items.length - 1;
+      downBtn.addEventListener('click', function(){ moveItem(index, 1); });
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'iconbtn danger';
+      delBtn.type = 'button';
+      delBtn.textContent = '✕';
+      delBtn.addEventListener('click', function(){ removeItem(index); });
+
+      actions.appendChild(upBtn);
+      actions.appendChild(downBtn);
+      actions.appendChild(delBtn);
+      row.appendChild(actions);
+
+      filelistEl.appendChild(row);
+    });
+  }
+
+  function moveItem(index, delta){
+    var target = index + delta;
+    if(target < 0 || target >= items.length) return;
+    var tmp = items[index];
+    items[index] = items[target];
+    items[target] = tmp;
+    render();
+  }
+
+  function removeItem(index){
+    items.splice(index, 1);
+    render();
+  }
+
+  dropzone.addEventListener('click', function(){ fileInput.click(); });
+  fileInput.addEventListener('change', function(e){
+    addFiles(e.target.files);
+    fileInput.value = '';
+  });
+
+  ['dragenter','dragover'].forEach(function(evt){
+    dropzone.addEventListener(evt, function(e){
+      e.preventDefault(); e.stopPropagation();
+      dropzone.classList.add('drag');
+    });
+  });
+  ['dragleave','drop'].forEach(function(evt){
+    dropzone.addEventListener(evt, function(e){
+      e.preventDefault(); e.stopPropagation();
+      dropzone.classList.remove('drag');
+    });
+  });
+  dropzone.addEventListener('drop', function(e){
+    if(e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files);
+  });
+
+  var A4_PORTRAIT = [595.28, 841.89];
+  var A4_LANDSCAPE = [841.89, 595.28];
+
+  function pageSizeFor(w, h){
+    return w > h ? A4_LANDSCAPE : A4_PORTRAIT;
+  }
+
+  function fitAndCenter(contentW, contentH, pageW, pageH){
+    var scale = Math.min(pageW / contentW, pageH / contentH);
+    var w = contentW * scale, h = contentH * scale;
+    return { w: w, h: h, x: (pageW - w) / 2, y: (pageH - h) / 2 };
+  }
+
+  function readAsArrayBuffer(file){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(){ resolve(reader.result); };
+      reader.onerror = function(){ reject(new Error('Falha ao ler ' + file.name)); };
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  // Redesenha a imagem num <canvas> e exporta como PNG antes de embutir no PDF.
+  // Isso evita falhas do pdf-lib com JPEGs progressivos, perfis de cor estranhos
+  // ou arquivos com extensão dupla (ex: "foto.jpg.jpeg").
+  function loadImageAsPngBytes(file){
+    return new Promise(function(resolve, reject){
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function(){
+        try{
+          var canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob(function(blob){
+            URL.revokeObjectURL(url);
+            if(!blob){ reject(new Error('Falha ao converter imagem.')); return; }
+            blob.arrayBuffer().then(resolve).catch(reject);
+          }, 'image/png');
+        } catch(err){
+          URL.revokeObjectURL(url);
+          reject(err);
+        }
+      };
+      img.onerror = function(){
+        URL.revokeObjectURL(url);
+        reject(new Error('Não foi possível carregar a imagem "' + file.name + '".'));
+      };
+      img.src = url;
+    });
+  }
+
+  btnGerar.addEventListener('click', function(){
+    if(items.length === 0) return;
+    btnGerar.disabled = true;
+    setStatus('Processando ' + items.length + ' arquivo(s)...', '');
+
+    (async function(){
+      try{
+        var mergedPdf = await PDFLib.PDFDocument.create();
+
+        for(var i = 0; i < items.length; i++){
+          var item = items[i];
+          setStatus('Processando ' + (i+1) + ' de ' + items.length + ': ' + item.file.name, '');
+
+          if(item.kind === 'pdf'){
+            var bytes = await readAsArrayBuffer(item.file);
+            var srcDoc;
+            try{
+              srcDoc = await PDFLib.PDFDocument.load(bytes);
+            } catch(err){
+              throw new Error('Não foi possível abrir "' + item.file.name + '" — pode estar protegido por senha ou corrompido.');
+            }
+            var pageIndices = srcDoc.getPageIndices();
+            var embeddedPages = await mergedPdf.embedPdf(srcDoc, pageIndices);
+            embeddedPages.forEach(function(ep){
+              var size = pageSizeFor(ep.width, ep.height);
+              var fit = fitAndCenter(ep.width, ep.height, size[0], size[1]);
+              var page = mergedPdf.addPage(size);
+              page.drawPage(ep, { x: fit.x, y: fit.y, width: fit.w, height: fit.h });
+            });
+          } else {
+            var pngBytes;
+            try{
+              pngBytes = await loadImageAsPngBytes(item.file);
+            } catch(err){
+              throw new Error('Não foi possível processar a imagem "' + item.file.name + '".');
+            }
+            var img;
+            try{
+              img = await mergedPdf.embedPng(pngBytes);
+            } catch(err){
+              throw new Error('Não foi possível processar a imagem "' + item.file.name + '".');
+            }
+            var dims = img.scale(1);
+            var size = pageSizeFor(dims.width, dims.height);
+            var fit = fitAndCenter(dims.width, dims.height, size[0], size[1]);
+            var page = mergedPdf.addPage(size);
+            page.drawImage(img, { x: fit.x, y: fit.y, width: fit.w, height: fit.h });
+          }
+        }
+
+        setStatus('Gerando arquivo final...', '');
+        var pdfBytes = await mergedPdf.save();
+        var blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        var filename = (filenameInput.value || 'documento-unificado').trim() || 'documento-unificado';
+        a.href = url;
+        a.download = filename + '.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+
+        setStatus('✓ PDF gerado com ' + mergedPdf.getPageCount() + ' página(s). Download iniciado.', 'ok');
+      } catch(err){
+        console.error(err);
+        setStatus(err && err.message ? err.message : 'Ocorreu um erro ao gerar o PDF.', 'err');
+      } finally {
+        btnGerar.disabled = items.length === 0;
+      }
+    })();
+  });
+
+  document.querySelectorAll('.faq-item').forEach(function(item){
+    item.querySelector('.faq-q').addEventListener('click', function(){
+      var wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(function(i){ i.classList.remove('open'); });
+      if(!wasOpen) item.classList.add('open');
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
