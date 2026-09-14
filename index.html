@@ -1854,7 +1854,7 @@ function renderLinkCard(link,extraClass){
   var excluindoBadge=link.exclusao_pendente?'<div class="card-exclusao-pendente">Exclusão solicitada</div>':'';
   var linkExpirado=link.validade&&link.validade<new Date().toISOString().slice(0,10);
   var expiradoBadge=(IS_MOD_OR_ADMIN&&linkExpirado)?'<span class="pill" style="background:#FDECEC;color:#B42318;margin-top:4px;display:inline-block">Expirado</span>':'';
-  var cliquesBadge=IS_MOD_OR_ADMIN?('<span style="position:absolute;top:32px;right:8px;background:rgba(0,0,0,.45);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;display:flex;align-items:center;gap:3px;z-index:2"><svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>'+(link.cliques||0)+'</span>'):'';
+  var cliquesBadge=IS_MOD_OR_ADMIN?('<span style="position:absolute;top:33px;right:8px;background:rgba(0,0,0,.45);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;display:flex;align-items:center;gap:3px;z-index:2"><svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>'+(link.cliques||0)+'</span>'):'';
   var descId='desc-'+link.id;
   var descTexto=escapeHtml(link.descricao||'');
 
