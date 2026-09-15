@@ -1663,7 +1663,7 @@ function ajustarTopoFixoMobile(){
   var fixoInicio=el('inicio-fixo'),fixoCat=el('cat-fixo');
   if(!topbar||(!fixoInicio&&!fixoCat))return;
   var visivel=getComputedStyle(topbar).display!=='none';
-  var topo=visivel?(topbar.offsetHeight-1)+'px':'0px';
+  var topo=visivel?(topbar.offsetHeight10)+'px':'0px';
   if(fixoInicio)fixoInicio.style.top=topo;
   if(fixoCat)fixoCat.style.top=topo;
 }
