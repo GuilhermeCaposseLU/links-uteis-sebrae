@@ -557,7 +557,36 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,1
 .saldo-row{display:flex;align-items:center;gap:12px}
 .saldo-pos{color:var(--green-mid);font-size:20px;font-weight:600}.saldo-neg{color:var(--red);font-size:20px;font-weight:600}
 .btn-export{width:100%;padding:12px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;background:var(--green);color:#fff;border:none;border-radius:var(--r);margin-top:1rem}.btn-export:hover{background:#004d99}.btn-export i{font-size:20px}
-@media(max-width:680px){.fg.c2,.fg.c4,.fg.c5{grid-template-columns:1fr 1fr}.fg.c3{grid-template-columns:1fr}.totais-grid{grid-template-columns:1fr 1fr}.consol-grid{grid-template-columns:1fr}.data-row-fields{grid-template-columns:1fr 1fr}.data-row-fields .principal-toggle{grid-column:1/-1}.data-row-fields2{grid-template-columns:1fr 1fr}.data-row{flex-wrap:wrap}body{overflow-x:hidden}}
+@media(max-width:680px){
+body{padding:12px 10px;overflow-x:hidden}
+.page{max-width:100%}
+.topbar{padding:10px;gap:6px;top:0}
+.topbar-title{width:100%;margin:0 0 4px;font-size:12px}
+.topbar .btn-sm,.topbar .btn-azul,.topbar .btn-verde{flex:1 1 auto;justify-content:center;min-height:40px;padding:8px 10px;font-size:13px}
+.header-doc{padding:1rem .75rem}
+.header-doc h1{font-size:12px}
+.fg.c2,.fg.c3,.fg.c4,.fg.c5{grid-template-columns:1fr}
+.totais-grid,.consol-grid{grid-template-columns:1fr 1fr}
+.data-row{flex-wrap:wrap;padding:10px}
+.data-row-num{width:100%;padding-top:0;margin-bottom:4px}
+.data-row-del{margin-top:0;align-self:flex-start}
+.data-row-fields,.data-row-fields2{grid-template-columns:1fr 1fr;width:100%}
+.data-row-fields .principal-toggle{grid-column:1/-1;padding-bottom:0}
+.cc-destaque .f{min-width:100%}
+.desp-item{flex-wrap:wrap}
+.desp-item select,.desp-item input[type=number]{width:100%;flex:1 1 100%}
+.desp-item input[type=text]{min-width:100%}
+.datas-bloco-btns{flex-direction:column}
+.datas-bloco-btns .btn-azul,.datas-bloco-btns .btn-verde,.datas-bloco-btns .btn-sm{width:100%;justify-content:center;min-height:42px;padding:10px 12px}
+.ativ-body .btn-azul,.ativ-body .btn-verde,.ativ-body .btn-sm{min-height:40px;padding:8px 12px}
+input[type=text],input[type=date],input[type=number],select,textarea{font-size:16px;padding:10px 12px}
+.modal{width:100%;max-width:100vw;max-height:90vh;border-radius:12px 12px 0 0;margin-top:auto}
+}
+@media(max-width:420px){
+.fg.c2,.totais-grid{grid-template-columns:1fr}
+.data-row-fields,.data-row-fields2{grid-template-columns:1fr}
+.topbar button{flex:1 1 calc(50% - 6px)}
+}
 ::placeholder{color:#aaa;font-style:italic;opacity:1}
 :-ms-input-placeholder{color:#aaa;font-style:italic}
 ::-ms-input-placeholder{color:#aaa;font-style:italic}
